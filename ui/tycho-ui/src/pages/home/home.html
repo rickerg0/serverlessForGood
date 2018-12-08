@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Serverless For Good
+    </ion-title>
+<div style='width: 200px;float: left'>
+  <ion-item>
+    <ion-label>State</ion-label>
+    <ion-select [(ngModel)]="theState" (ionChange)="onStateChange()">
+      <ion-option *ngFor="let state of states" value= {{state}}>
+        {{state}}
+      </ion-option>
+    </ion-select>
+    </ion-item>
+</div>
+
+<div style='width: 300px;float: left'  >
+    <ion-item>
+    <ion-label>City</ion-label>
+    <ion-select [(ngModel)]="theCity" (ionChange)="onCityChange( )">
+      <ion-option *ngFor="let city of cities" [value]= "city">
+        {{city.title}}
+      </ion-option>
+    </ion-select>
+  </ion-item>
+</div>
+<div style='width: 150px;float: left'  >
+    <ion-item>
+    <ion-label>Years</ion-label>
+    <ion-select [(ngModel)]="theYearByCity" (ionChange)="onYearChange( )">
+      <ion-option *ngFor="let year of yearsByCity" [value]= "year">
+        {{year}}
+      </ion-option>
+    </ion-select>
+  </ion-item>
+</div>
+
+<div style='width: 300px;float: left'  >
+    <ion-item>
+    <ion-label>Diseases byCity</ion-label>
+    <ion-select [(ngModel)]="theDiseaseOfCity" >
+      <ion-option *ngFor="let diseaseOfCity of listofCityDiseases" [value]= "diseaseOfCity">
+        {{diseaseOfCity.instance}}
+      </ion-option>
+    </ion-select>
+  </ion-item>
+</div>
+
+
+<div style='width: 350px;float: left'  >
+    <ion-item>
+    <ion-label>All Diseases</ion-label>
+    <ion-select [(ngModel)]="theDisease" (ionChange)="onDiseaseChange( )">
+      <ion-option *ngFor="let disease of diseases" [value]= "disease">
+        {{disease}}
+      </ion-option>
+    </ion-select>
+  </ion-item>
+</div>
+
+    <ion-buttons end>
+      <button ion-button block (click)="openModal()">Open Modal</button>
+    </ion-buttons>
+
+    <ion-buttons end>
+      <button ion-button (click)="addMarker()"><ion-icon name="add"></ion-icon>Add Marker</button>
+    </ion-buttons>
+
+
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div #map id="map"></div>
+</ion-content>

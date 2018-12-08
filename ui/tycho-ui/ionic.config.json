@@ -1,0 +1,7 @@
+{
+  "name": "tycho-ui",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

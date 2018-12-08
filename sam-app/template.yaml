@@ -1,0 +1,100 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    sam-app
+
+    Sample SAM Template for sam-app
+    
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 3
+
+
+Resources:
+    SocialGoodAPI:
+      Type: AWS::Serverless::Api
+      Properties:
+        StageName: dev
+        DefinitionUri: swagger.yaml
+        
+    SrcBucket:
+          Type: AWS::S3::Bucket
+          Properties:
+            BucketName: my-socialgood-dropzone 
+          
+    SearchStateFunction:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: s3://my-socialgood-package/SearchStatepackage.zip  
+            Handler: searchstatefunction.Search_State
+            Runtime: python3.6
+            Policies: AWSLambdaBasicExecutionRole    
+            Events:
+                HelloWorld:
+                    Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                    Properties:
+                        Path: /searchstate
+                        Method: get
+    SearchCityFunction:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: s3://my-socialgood-package/SearchCitypackage.zip  
+            Handler: searchcityfunction.Search_City
+            Runtime: python3.6
+            Policies: AWSLambdaBasicExecutionRole    
+            Events:
+                HelloWorld:
+                    Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                    Properties:
+                        Path: /searchcity
+                        Method: get
+    
+    SearchDiseaseCityFunction:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: s3://my-socialgood-package/Searchdiseasecitypackage.zip  
+            Handler: searchdiseasecityfunction.Search_Disease_City
+            Runtime: python3.6
+            Policies: AWSLambdaBasicExecutionRole    
+            Events:
+                HelloWorld:
+                    Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                    Properties:
+                        Path: /searchdiseasecity
+                        Method: get
+ 
+    ImporterFunction:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: s3://my-socialgood-package/Importerpackage.zip  
+            Handler:  importer.import_content
+            Runtime: python3.6
+            Policies: 
+              - AWSLambdaBasicExecutionRole
+              - S3CrudPolicy:
+                 BucketName: my-socialgood-dropzone
+            
+            Events:
+              S3CreateObject:
+                Type: S3
+                Properties:
+                 Bucket: !Ref SrcBucket
+                 Events: s3:ObjectCreated:*
+   
+Outputs:
+
+    SearchStateApi:
+      Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev/searchstate"
+
+    SearchStateFunction:
+      Description: "Search State Lambda Function ARN"
+      Value: !GetAtt SearchStateFunction.Arn
+
+    ImporterFunction:
+      Description: "Importer Function ARN"
+      Value: !GetAtt ImporterFunction.Arn
+      
+      
+      

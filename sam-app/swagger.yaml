@@ -1,0 +1,206 @@
+---
+swagger: "2.0"
+info:
+  description: "This the API for serverless for social good"
+  version: "1.0.0"
+  title: "serverless for social good API"
+  contact:
+    email: "rickerg0@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/rickergreg/serverless-for-social-good/1.0.0"
+tags:
+- name: "admins"
+  description: "Secured Admin-only calls"
+- name: "developers"
+  description: "Operations available to regular developers"
+schemes:
+- "https"
+paths:
+  /searchstate:
+    get:
+      tags:
+      - "users"
+      summary: "search for state or return all states"
+      description: "By passing in the appropriate options, you can search for\nstates\
+        \ in the system\n"
+      operationId: "searchstate"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "stateName"
+        in: "query"
+        description: "pass an optional search string for looking up states"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "search results matching criteria"
+          headers:
+            Access-Control-Allow-Headers:
+              type: string
+            Access-Control-Allow-Methods:
+              type: string
+            Access-Control-Allow-Origin:
+              type: string
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/State"
+        400:
+          description: "bad input parameter"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:544820806754:function:Search_State/invocations
+        credentials: arn:aws:iam::544820806754:role/APIGatewayExecutionRole
+        httpMethod: GET
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          BAD.*:
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          INT.*:
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+  /searchcity:
+    get:
+      tags:
+      - "users"
+      summary: "search for city or return all cities"
+      description: "By passing in the appropriate options, you can search for\nstates\
+        \ in the system\n"
+      operationId: "searchcity"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "cityName"
+        in: "query"
+        description: "pass an optional search string for looking up city"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "search results matching criteria"
+          headers:
+            Access-Control-Allow-Headers:
+              type: string
+            Access-Control-Allow-Methods:
+              type: string
+            Access-Control-Allow-Origin:
+              type: string
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/City"
+        400:
+          description: "bad input parameter"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:544820806754:function:Search_City/invocations
+        credentials: arn:aws:iam::544820806754:role/APIGatewayExecutionRole
+        httpMethod: GET
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          BAD.*:
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          INT.*:
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+  /searchdieseasecity:
+    get:
+      tags:
+      - "users"
+      summary: "search for diesease and city or return diesease"
+      description: "By passing in the appropriate options, you can search for\nsearch diesease city\
+        \ in the system\n"
+      operationId: "searchdieseasecity"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "diesease"
+        in: "query"
+        description: "pass an optional search string for looking up diesease"
+        required: false
+        type: "string"
+      - name: "city"
+        in: "query"
+        description: "pass an optional search string for looking up city"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "search results matching criteria"
+          headers:
+            Access-Control-Allow-Headers:
+              type: string
+            Access-Control-Allow-Methods:
+              type: string
+            Access-Control-Allow-Origin:
+              type: string
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/City"
+        400:
+          description: "bad input parameter"
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:544820806754:function:Search_City/invocations
+        credentials: arn:aws:iam::544820806754:role/APIGatewayExecutionRole
+        httpMethod: GET
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          BAD.*:
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          INT.*:
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+  
+definitions:
+  State:
+    type: "string"
+    properties:
+      statename:
+        type: "string"
+  City:
+    type: "string"
+    properties:
+      statename:
+        type: "string" 
+  Diesase:
+    type: "string"
+    properties:
+      diesasename:
+        type: "string"
+    
+  DiesaseCityLocation:
+    type: "object"
+    properties:
+      diesasename:
+        type: "string"
+      statename:
+        type: "string"
+      lat:
+        type: "number"
+      lon:
+        type: "number"
+    

@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'sam-app
+
+  Sample SAM Template for sam-app
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Outputs:
+  ImporterFunction:
+    Description: Importer Function ARN
+    Value:
+      Fn::GetAtt:
+      - ImporterFunction
+      - Arn
+  SearchStateApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev/searchstate
+  SearchStateFunction:
+    Description: Search State Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - SearchStateFunction
+      - Arn
+Resources:
+  ImporterFunction:
+    Properties:
+      CodeUri: s3://my-socialgood-package/Importerpackage.zip
+      Events:
+        S3CreateObject:
+          Properties:
+            Bucket:
+              Ref: SrcBucket
+            Events: s3:ObjectCreated:*
+          Type: S3
+      Handler: importer.import_content
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - S3CrudPolicy:
+          BucketName: my-socialgood-dropzone
+      Runtime: python3.6
+    Type: AWS::Serverless::Function
+  SearchStateFunction:
+    Properties:
+      CodeUri: s3://my-socialgood-package/SearchStatepackage.zip
+      Events:
+        HelloWorld:
+          Properties:
+            Method: get
+            Path: /searchstate
+          Type: Api
+      Handler: searchstatefunction.Search_State
+      Policies: AWSLambdaBasicExecutionRole
+      Runtime: python3.6
+    Type: AWS::Serverless::Function
+  SocialGoodAPI:
+    Properties:
+      DefinitionUri: s3://my-socialgood-package/42d75cbc9b84ee5b6eceae26039d5be9
+      StageName: dev
+    Type: AWS::Serverless::Api
+  SrcBucket:
+    Properties:
+      BucketName: my-socialgood-dropzone
+    Type: AWS::S3::Bucket
+Transform: AWS::Serverless-2016-10-31
